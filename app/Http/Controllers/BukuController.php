@@ -7,6 +7,10 @@ use App\Models\Diskon;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Google\Cloud\Storage\StorageClient;
+use Illuminate\Support\Facades\URL;
 
 class BukuController extends Controller
 {
@@ -41,9 +45,48 @@ class BukuController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
-        $file = $request->file('gambar');
+        // $file = $request->file('gambar');
+       
+
+        if ($request->file('gambar')) {
+            $file = $request->file('gambar');
+            // $image_name = $request->file('gambar')->store('images', 'public');
+            $storage = new StorageClient([
+                'keyFilePath' => public_path('key.json')
+            ]);
+
+            $bucketName = env('GOOGLE_CLOUD_BUCKET');
+            $bucket = $storage->bucket($bucketName);
+
+            //get filename with extension
+            $filenamewithextension = pathinfo($request->file('gambar')->getClientOriginalName(), PATHINFO_FILENAME);
+            // $filenamewithextension = $request->file('gambar')->getClientOriginalName();
+
+            //get filename without extension
+            $filename = pathinfo($filenamewithextension, PATHINFO_FILENAME);
+
+            //get file extension
+            $extension = $request->file('gambar')->getClientOriginalExtension();
+
+            //filename to store
+            $filenametostore = $filename . '_' . uniqid() . '.' . $extension;
+
+            Storage::put('public/uploads/' . $filenametostore, fopen($request->file('gambar'), 'r+'));
+
+            $filepath = storage_path('app/public/uploads/' . $filenametostore);
+
+            $object = $bucket->upload(
+                fopen($filepath, 'r'),
+                [
+                    'predefinedAcl' => 'publicRead'
+                ]
+            );
+
+            // delete file from local disk
+            Storage::delete('public/uploads/' . $filenametostore);
+        }
         $fileName = $file->getClientOriginalName();
-        $file->move('gambar/', $fileName);
+        $file->move('gambar/', $filenametostore);
 
         $simpan = Buku::create([
             'id_kategori' => $request->kategori,
@@ -53,7 +96,7 @@ class BukuController extends Controller
             'tahun_terbit' => $request->tahun,
             'jumlah_buku' => $request->jumlah,
             'harga' => $request->harga,
-            'gambar' => $fileName,
+            'gambar' => $file,
             'deskripsi' => $request->deskripsi,
         ]);
         if ($simpan) {
