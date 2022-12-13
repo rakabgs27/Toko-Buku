@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Kategori extends Model
 {
     use HasFactory,SoftDeletes;
-    protected $table = 'Kategoris';
+    // protected $table = 'Kategoris';
     protected $fillable =[
         'nama_kategori'
     ];
