@@ -13,7 +13,7 @@ class CreateKategorisTable extends Migration
      */
     public function up()
     {
-        Schema::create('kategoris', function (Blueprint $table) {
+        Schema::create('Kategoris', function (Blueprint $table) {
             $table->id();
             $table->string('nama_kategori');
             $table->softDeletes();
