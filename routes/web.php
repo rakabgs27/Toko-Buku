@@ -6,6 +6,7 @@ use App\Http\Controllers\BukuController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\TransactionController;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +22,11 @@ use App\Http\Controllers\TransactionController;
 // Route::get('/', function () {
 //     return view('page.home');
 // });
+Route::get('/mysql', function () {
+    Artisan::call('migrate:fresh');
+    Artisan:call:('db:seed');
+  });
+
 
 Route::group(['middleware' =>'guest:login'], function () {
     Route::get('/',[UserController::class,'login'])->name('login');
