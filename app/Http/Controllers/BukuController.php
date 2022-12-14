@@ -173,7 +173,15 @@ class BukuController extends Controller
 
     public function delete($id)
     {
+
         $delete = Buku::find($id);
+        $storage = new StorageClient();
+
+        $bucketName = env('GOOGLE_CLOUD_BUCKET');
+        $bucket = $storage->bucket($bucketName);
+        $object = $bucket->object($delete->gambar);
+        $object->delete();
+        
         if ($delete->gambar != NULL) {
             unlink('gambar/' . $delete->gambar);
         }
