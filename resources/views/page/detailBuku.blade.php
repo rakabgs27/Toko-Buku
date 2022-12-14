@@ -18,7 +18,6 @@ Detail Buku
 
         <div class="card">
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-
                 <img src="{{'https://storage.googleapis.com/rakacloud/'.$buku->gambar}}" width="50%" alt="Profile" class="">
                 <h2>{{$buku->judul}}</h2>
 

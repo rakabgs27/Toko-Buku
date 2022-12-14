@@ -181,11 +181,11 @@ class BukuController extends Controller
         $bucket = $storage->bucket($bucketName);
         $object = $bucket->object($delete->gambar);
         $object->delete();
-        
-        if ($delete->gambar != NULL) {
-            unlink('gambar/' . $delete->gambar);
-        }
-        $delete->delete();
+
+        // if ($delete->gambar != NULL) {
+        //     unlink('gambar/' . $delete->gambar);
+        // }
+        $delete->delete($delete);
 
         if ($delete) {
             return redirect('home')->with('success', 'Sukses Delete Buku');
