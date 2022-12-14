@@ -96,7 +96,7 @@ class BukuController extends Controller
             'tahun_terbit' => $request->tahun,
             'jumlah_buku' => $request->jumlah,
             'harga' => $request->harga,
-            'gambar' => $file,
+            'gambar' => $filenametostore,
             'deskripsi' => $request->deskripsi,
         ]);
         if ($simpan) {
